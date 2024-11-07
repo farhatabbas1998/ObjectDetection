@@ -6,7 +6,7 @@ import torch
 
 def process_images(input_folder, output_folder):
     # Check if CUDA is available and set the device accordingly
-    device = 'gpu' if torch.cuda.is_available() else 'cpu'
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
     print(f"Using device: {device}")
 
     # Create the output folder if it doesn't exist
