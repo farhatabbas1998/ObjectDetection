@@ -8,33 +8,20 @@ import numpy as np
 import time
 
 def process_images(input_folder, output_folder):
-    # Check if CUDA is available and set the device accordingly
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     print(f"Using device: {device}")
-
-    # Create the output folder if it doesn't exist
     os.makedirs(output_folder, exist_ok=True)
-
-    # Load the pre-trained Mask R-CNN model with COCO weights
-    model = maskrcnn_resnet50_fpn(weights=MaskRCNN_ResNet50_FPN_Weights.DEFAULT).to(device)
+    model = maskrcnn_resnet50_fpn(weights=MaskRCNN_ResNet50_FPN_Weights.DEFAULT).to(device) #Mask R-CNN model with COCO weights
     model.eval()
-
-    # Get the COCO class labels
-    coco_classes = MaskRCNN_ResNet50_FPN_Weights.DEFAULT.meta['categories']
-
-    # Define a set of image transformations
-    transform = T.Compose([T.ToTensor()])
-
-    # List all files in the input folder
+    coco_classes = MaskRCNN_ResNet50_FPN_Weights.DEFAULT.meta['categories']  # Get the COCO class labels
+    transform = T.Compose([T.ToTensor()]) # Define a set of image transformations
+ 
     input_files = os.listdir(input_folder)
 
     for file in input_files:
-        # Load an image
-        image_path = os.path.join(input_folder, file)
+        image_path = os.path.join(input_folder, file)# Load an image
         image = Image.open(image_path).convert("RGB")
-
-        # Start preprocessing timer
-        preprocess_start = time.time()
+        preprocess_start = time.time() # Start preprocessing timer
         input_image = transform(image).unsqueeze(0).to(device)  # Add batch dimension and move to device
         preprocess_end = time.time()
 
@@ -68,15 +55,9 @@ def process_images(input_folder, output_folder):
                 detected_objects.append(class_name)
                 cv2.putText(marked_image, f'{class_name} {scores[i]:.2f}', (x1, y1 - 10),
                             cv2.FONT_HERSHEY_SIMPLEX, 10, (255, 0, 0), 10)
-
-        # Save the marked image to the output folder
         output_image_path = os.path.join(output_folder, file)
         cv2.imwrite(output_image_path, cv2.cvtColor(marked_image, cv2.COLOR_RGB2BGR))
-
-        # Calculate postprocess time
-        postprocess_time = time.time() - inference_end
-
-        # Print terminal output
+        postprocess_time = time.time() - inference_end # Calculate postprocess time
         print(f"{len(detected_objects)} objects detected: {', '.join(detected_objects)}")
         print(f"Processed {file} and saved to {output_image_path}")
         print(f"Speed: {preprocess_end - preprocess_start:.2f}ms preprocess, "
