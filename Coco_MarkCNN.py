@@ -64,7 +64,8 @@ def process_images(input_folder, output_folder):
               f"{inference_end - inference_start:.2f}ms inference, "
               f"{postprocess_time:.2f}ms postprocess per image")
 
-# Example usage:
+#----------------
+
 input_folder = "Input_Folder"
 output_folder = "Output_Folder"
 process_images(input_folder, output_folder)
