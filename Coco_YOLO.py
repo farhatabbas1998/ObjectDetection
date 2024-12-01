@@ -41,11 +41,7 @@ def process_images(input_folder, output_folder):
                 cv2.putText(
                     marked_image, 
                     label, 
-                    (x1, max(0, y1 - 10)),  # Ensure the label is within image bounds
-                    cv2.FONT_HERSHEY_SIMPLEX, 
-                    10, 
-                    (0, 0, 255), 
-                    10 
+                    (x1, max(0, y1 - 10)), cv2.FONT_HERSHEY_SIMPLEX, 10, (0, 0, 255), 10 
                 )
         output_image_path = os.path.join(output_folder, file)
         cv2.imwrite(output_image_path, marked_image)
